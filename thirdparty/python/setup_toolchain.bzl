@@ -6,4 +6,5 @@ def register_python_toolchain():
         name = "python_interpreter",
         # Available versions are listed in @rules_python//python:versions.bzl.
         python_version = PYTHON_VERSION,
+        ignore_root_user_error = True,
     )

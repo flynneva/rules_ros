@@ -1,0 +1,56 @@
+name: Build bazel workspace
+
+on:
+  push:
+    branches:
+      - main
+    tags:
+      - '**'
+  pull_request:
+    branches:
+      - main
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+env:
+  WORKSPACE_PATH: ros_ws
+  CLONE_PATH: ros_ws/src/rules_ros
+
+# only run one build doc workflow at a time, cancel any running ones
+concurrency: 
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        distro:
+          - focal
+          - jammy
+        include:
+          - distro: focal
+            docker_image: ubuntu:focal
+          - distro: jammy
+            docker_image: ubuntu:jammy
+    container:
+      image: ${{ matrix.docker_image }}
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      - name: Checkout rules_ros
+        uses: actions/checkout@v3
+        with:
+          path: ${{ env.CLONE_PATH }}
+      - name: Setup bazelisk
+        uses: bazelbuild/setup-bazelisk@v2
+      - name: Mount bazel cache  # Optional
+        uses: actions/cache@v3
+        with:
+          path: "~/.cache/bazel"
+          key: bazel
+      - name: Build example from rules_ros
+        run: |
+          cd ${CLONE_PATH}
+          bazel build @rules_ros//examples/hello_world        
