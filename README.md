@@ -41,6 +41,7 @@ as a launch tool for Bazel.
 ### Workspace setup
 
 Create an empty folder and add the following files to it:
+
 * `WORKSPACE` file:
   ```python
   workspace(name = "my_first_bazel_ros_workspace") # choose your workspace name here
@@ -83,7 +84,9 @@ Create an empty folder and add the following files to it:
   load("@rules_ros//thirdparty:setup_04.bzl", "setup_04")
   setup_04()
   ```
+
 * `.bazelrc` file:
+
   ```bash
   # enable incompatible Python init mode
   build --incompatible_default_to_explicit_init_py
@@ -97,6 +100,7 @@ Create an empty folder and add the following files to it:
   ```
   
 * `.bazelversion` file (in case you are using bazelisk):
+
   ```text
   5.3.1
   ```
@@ -107,23 +111,31 @@ To **build** an example delivered in the `rules_ros` repository run, e.g.
 ```bash
 bazel build @rules_ros//examples/hello_world
 ```
+
 from anywhere within your workspace.
 
 **Executing** the example can be done by calling
+
 ```bash
 bazel run @rules_ros//examples/hello_world
 ```
+
 Note that no sourcing is necessary. Bazel will take care of all the dependencies. 
 
 **Deploying** a package archive to an install folder can be done by
+
 ```bash
 bazel run @rules_ros//examples:rules_ros_examples.install <install_folder>
 ```
+
 Now we are back to working with ROS as usual. Source the package as usual:
+
 ```bash
 source <install_folder>/setup.bash
 ```
+
 and run an executable with
+
 ```bash
 ros2 run hello_world hello_world
 ```
@@ -136,9 +148,11 @@ In this setup, a hermetic Python interpreter is included. The version is specifi
 `thirdparty/python/repositories.bzl`. Python packages specified in
 `thirdparty/python/requirements_lock.in` are available for use. If you need to add a package,
 you must run
+
 ```console
 bazel run @rules_ros//thirdparty/python:requirements_lock.update
 ```
+
 to pin specific versions of the dependencies. In the future there will be a possibility to
 inject a customization in the WORKSPACE file.
 
@@ -155,6 +169,7 @@ as a dependency in your `cc_binary` or `cc_library` target.
 
 The exact version of a ROS 2 repository is pinned in the file `repos/config/ros2_<distro>.lock`.
 This file can be updated for the configured distro by running:
+
 ```console
 bazel run @rules_ros//repos/config:repos_lock.update
 ```
